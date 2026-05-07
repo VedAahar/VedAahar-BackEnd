@@ -5,6 +5,7 @@ import com.example.VedAahar.Repository.MealRepo;
 import com.example.VedAahar.Repository.UserRepo;
 import com.example.VedAahar.Service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -16,6 +17,9 @@ import java.util.*;
 public class MealController {
 
 
+    @Value("${ml.service.url}")
+    private String mlServiceUrl;
+    
     public final WebClient webClient=WebClient.create();
 
     @Autowired
@@ -46,7 +50,7 @@ public class MealController {
         //mealRequest.setDays(2);
         System.out.println(mealRequest.toString());
         MealPlanResponse response = webClient.post()
-                .uri("http://127.0.0.1:5000/generate-plan")
+                .uri(mlServiceUrl+"/generate-plan")
                 .bodyValue(mealRequest)
                 .retrieve()
                 .bodyToMono(MealPlanResponse.class)
@@ -116,7 +120,7 @@ public class MealController {
 
         System.out.println(mealRequest.toString());
         FastingMealResponse response = webClient.post()
-                .uri("http://127.0.0.1:5000/generate-fasting-meal")
+                .uri(mlServiceUrl+"/generate-fasting-meal")
                 .bodyValue(mealRequest)
                 .retrieve()
                 .bodyToMono(FastingMealResponse.class)
